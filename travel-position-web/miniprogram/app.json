@@ -1,13 +1,43 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/checkin/checkin",
+    "pages/footprint/footprint",
+    "pages/my/my",
     "pages/logs/logs"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "旅行版图",
     "navigationBarBackgroundColor": "#ffffff"
   },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FFC107",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "版图"
+      },
+      {
+        "pagePath": "pages/footprint/footprint",
+        "text": "足迹"
+      },
+      {
+        "pagePath": "pages/my/my",
+        "text": "我的"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于旅游打卡定位所在城市"
+    }
+  },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "style": "v2",
   "componentFramework": "glass-easel",
   "lazyCodeLoading": "requiredComponents"

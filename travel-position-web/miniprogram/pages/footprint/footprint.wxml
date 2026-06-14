@@ -1,0 +1,26 @@
+<!--footprint.wxml-->
+<view class="footprint-page">
+  <view wx:if="{{records.length === 0 && !loading}}" class="empty">
+    <text>还没有足迹,去打卡点亮第一个城市吧</text>
+  </view>
+
+  <view class="timeline">
+    <view wx:for="{{records}}" wx:key="id" class="timeline-item">
+      <view class="item-dot"></view>
+      <view class="item-content">
+        <view class="item-header">
+          <text class="item-city">{{item.cityName}}</text>
+          <text class="item-province">{{item.provinceName}}</text>
+        </view>
+        <view wx:if="{{item.note}}" class="item-note">{{item.note}}</view>
+        <view class="item-footer">
+          <text class="item-time">{{item.checkinTime}}</text>
+          <text class="item-del" data-id="{{item.id}}" bindtap="onDelete">删除</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-tip">加载中...</view>
+  <view wx:elif="{{noMore && records.length > 0}}" class="loading-tip">没有更多了</view>
+</view>

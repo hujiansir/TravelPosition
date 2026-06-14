@@ -6,6 +6,9 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import com.travel.common.BusinessException;
 import com.travel.common.Result;
 import com.travel.dto.WxLoginRequest;
+import com.travel.entity.User;
+import com.travel.service.UserService;
+import com.travel.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -25,35 +28,43 @@ import java.util.Map;
 public class WxAuthController {
 
     private final WxMaService wxMaService;
+    private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     /**
-     * 微信小程序登录
+     * 微信小程序登录:code → openid → 查/建用户 → 签发 JWT
      */
     @PostMapping("/login")
     public Result<Map<String, Object>> login(@Validated @RequestBody WxLoginRequest request) {
         try {
-            // 调用微信接口获取 session 信息
             WxMaJscode2SessionResult session = wxMaService.getUserService()
                     .getSessionInfo(request.getCode());
 
             String openid = session.getOpenid();
-            String sessionKey = session.getSessionKey();
             String unionid = session.getUnionid();
+            log.info("微信登录成功,openid: {}", openid);
 
-            log.info("微信登录成功，openid: {}", openid);
+            // 查询或创建用户
+            User user = userService.loginOrRegister(openid, unionid);
 
-            // TODO: 根据 openid 查询或创建用户，生成 token
-            // 这里暂时返回基础信息
+            // 签发 JWT
+            String token = jwtUtil.generate(user.getId(), openid);
+
+            Map<String, Object> userInfo = new HashMap<>();
+            userInfo.put("id", user.getId());
+            userInfo.put("openid", openid);
+            userInfo.put("nickname", user.getNickname());
+            userInfo.put("avatarUrl", user.getAvatarUrl());
+
             Map<String, Object> result = new HashMap<>();
+            result.put("token", token);
             result.put("openid", openid);
-            result.put("sessionKey", sessionKey);
-            result.put("unionid", unionid);
-            // result.put("token", token);
+            result.put("userInfo", userInfo);
 
             return Result.success(result);
         } catch (WxErrorException e) {
-            log.error("微信登录失败：{}", e.getMessage(), e);
-            throw new BusinessException("微信登录失败：" + e.getMessage());
+            log.error("微信登录失败:{}", e.getMessage(), e);
+            throw new BusinessException("微信登录失败:" + e.getMessage());
         }
     }
 
@@ -70,11 +81,11 @@ public class WxAuthController {
         try {
             WxMaPhoneNumberInfo phoneInfo = wxMaService.getUserService()
                     .getPhoneNoInfo(code);
-            log.info("获取手机号成功：{}", phoneInfo.getPhoneNumber());
+            log.info("获取手机号成功:{}", phoneInfo.getPhoneNumber());
             return Result.success(phoneInfo);
         } catch (WxErrorException e) {
-            log.error("获取手机号失败：{}", e.getMessage(), e);
-            throw new BusinessException("获取手机号失败：" + e.getMessage());
+            log.error("获取手机号失败:{}", e.getMessage(), e);
+            throw new BusinessException("获取手机号失败:" + e.getMessage());
         }
     }
 

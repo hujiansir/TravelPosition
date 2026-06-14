@@ -61,12 +61,15 @@ class Request {
     }
 
     return new Promise((resolve, reject) => {
+      const token = wx.getStorageSync('token')
+      const authHeader: Record<string, string> = token ? { 'Authorization': 'Bearer ' + token } : {}
       wx.request({
         url: this.baseUrl + url,
         method,
         data,
         header: {
           'Content-Type': 'application/json',
+          ...authHeader,
           ...header
         },
         timeout: this.timeout,
@@ -76,6 +79,22 @@ class Request {
           }
 
           const result = res.data as ResponseData<T>
+
+          // token 失效:清 token 并重新登录
+          if (result.code === 401) {
+            wx.removeStorageSync('token')
+            const app = getApp<IAppOption>()
+            if (app && app.wxLogin) {
+              app.wxLogin()
+            }
+            wx.showToast({
+              title: '登录已过期,请重试',
+              icon: 'none',
+              duration: 2000
+            })
+            reject(new Error(result.message || '未登录'))
+            return
+          }
 
           // 请求成功
           if (result.code === 200) {

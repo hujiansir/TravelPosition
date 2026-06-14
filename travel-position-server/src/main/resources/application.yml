@@ -52,6 +52,17 @@ wx:
     appid: wx2f2926f00942112e
     secret: dfd310a360b7378cb299afd9c0fb4b76
 
+# JWT 配置
+jwt:
+  secret: travel-position-secret-please-change-in-production-20240614
+  expire-seconds: 604800
+
+# 腾讯位置服务配置(逆地理编码)
+tencent:
+  map:
+    key: PLUBZ-KFVKU-ARKV6-G3D4W-DZ4VH-WZBLK
+    geocoder-url: https://apis.map.qq.com/ws/geocoder/v1/
+
 # 日志配置
 logging:
   level:

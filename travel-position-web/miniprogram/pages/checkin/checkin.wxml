@@ -1,0 +1,37 @@
+<!--checkin.wxml-->
+<view class="checkin-page">
+  <view class="location-card">
+    <view class="loc-title">当前定位</view>
+    <block wx:if="{{locating}}">
+      <view class="loc-status">定位中...</view>
+    </block>
+    <block wx:elif="{{locationReady}}">
+      <view class="loc-coord">经度 {{lng}}  纬度 {{lat}}</view>
+      <view class="loc-hint">点亮你所在的地级市</view>
+    </block>
+    <block wx:else>
+      <view class="loc-status">定位失败</view>
+      <view class="loc-retry" bindtap="getLocation">重新定位</view>
+    </block>
+  </view>
+
+  <view class="note-card">
+    <view class="note-title">备注(可选)</view>
+    <textarea
+      class="note-input"
+      value="{{note}}"
+      bindinput="onNoteInput"
+      maxlength="500"
+      placeholder="记下这一刻的心情..."
+      auto-height
+    ></textarea>
+  </view>
+
+  <button
+    class="checkin-submit {{(!locationReady || submitting) ? 'disabled' : ''}}"
+    bindtap="doCheckin"
+    disabled="{{!locationReady || submitting}}"
+  >
+    {{submitting ? '打卡中...' : '打卡点亮'}}
+  </button>
+</view>

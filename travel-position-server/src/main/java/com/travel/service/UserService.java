@@ -13,4 +13,9 @@ public interface UserService extends IService<User> {
      */
     User getByOpenid(String openid);
 
+    /**
+     * 登录或注册:openid 存在则返回,不存在则创建
+     */
+    User loginOrRegister(String openid, String unionid);
+
 }

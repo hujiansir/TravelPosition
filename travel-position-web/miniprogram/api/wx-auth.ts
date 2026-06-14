@@ -5,9 +5,13 @@ import { request } from '../utils/request'
  */
 export interface WxLoginResponse {
   openid: string
-  sessionKey: string
-  unionid?: string
   token?: string
+  userInfo?: {
+    id: number
+    openid: string
+    nickname: string
+    avatarUrl: string
+  }
 }
 
 /**

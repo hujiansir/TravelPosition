@@ -4,5 +4,5 @@
 # Claude Code 本地配置
 .claude/
 
-# 本地文档（superpowers 相关）
-docs/superpowers/
+# 依赖
+node_modules/
