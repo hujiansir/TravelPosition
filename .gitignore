@@ -1,0 +1,8 @@
+# IDE / 编辑器配置
+.idea/
+
+# Claude Code 本地配置
+.claude/
+
+# 本地文档（superpowers 相关）
+docs/superpowers/
